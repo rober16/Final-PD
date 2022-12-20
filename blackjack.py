@@ -29,7 +29,7 @@ def repartirCartas(mazo):
     return mano
 
 def getValor(valor):
-    if(valor in ['J', 'Q', 'K', 'A']):
+    if(valor in ['J', 'Q', 'K']):
         return 10
     return valor
 
@@ -83,15 +83,16 @@ def main():
         if(r == 1):
              proxima_carta(mazo, manoJugador)
         if(r == 2):
+            print("El jugador se planto con - " + str(contar_mano(manoJugador)))
             turnoPC = True
             break        
-    proxTurno = True
+    turnoPC = True
     
     
-    if(proxTurno):
+    if(turnoPC):
         mostrar_mano(manoBanca, banca)
-        while(contar_mano(manoBanca) <= 21):
-            proxima_carta(mazo, manoBanca)
+        while(contar_mano(manoBanca) <= 17):
+                proxima_carta(mazo, manoBanca)
     
     
     if(contar_mano(manoJugador) > 21):
@@ -106,6 +107,15 @@ def main():
         mostrar_mano(manoBanca, banca)
     else:
         print("La banca gana la ronda con " + str(contar_mano(manoBanca))) 
+        mostrar_mano(manoBanca, banca)
+
+    
+    if(contar_mano(manoJugador) == 21):
+        print("El jugador gana la ronda con BlackJack " + str(contar_mano(manoJugador)))
+        mostrar_mano(manoJugador, jugador)
+    
+    if(contar_mano(manoBanca) == 21):
+        print("La banca gana la ronda con BlackJack " + str(contar_mano(manoBanca)))
         mostrar_mano(manoBanca, banca)
                        
 if __name__ == "__main__":
