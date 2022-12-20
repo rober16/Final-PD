@@ -1,107 +1,112 @@
 import random
 
-class Carta:
-    def __init__(self, s, v):
-        self.simbolo = s
-        self.valor = v
-    
-    def get_valor(self):
-        if(self.valor in ['J', 'Q', 'K', 'A']):
-            return 10
-        return self.valor
-    
-class Mazo:
-    def __init__(self):
-        self.mazo = []
-        for simbolo in ['♠', '♣', '♥', '♦']:
-            for valor in range(2, 11):
-                self.mazo.append(Carta(simbolo, valor))
-            for valor in ['J', 'Q', 'K', 'A']:
-                self.mazo.append(Carta(simbolo, valor))
-        random.shuffle(self.mazo)
-    
-    def mostrar_mazo(self):
-        for c in self.mazo:
-            print(str(c.valor) + c.simbolo)
-            
-    def proxima_carta(self, j):
-        j.recibir_carta(self.mazo[0])
-        self.mazo.remove(self.mazo[0])
+def bienvenida():
+    print("== ♠ ♣ 𝓑𝓵𝓪𝓬𝓴𝓙𝓪𝓬𝓴 ♥ ♦ ==")
+    nombre = input('Por favor ingrese su nombre:')
+    nombre = str(nombre)
+    return nombre
 
-class Jugador:
-    def __init__(self, n):
-        self.mano = []
-        self.nombre = n
+def generarMazo():
+    numeros = list(range(2,11)) + ['J', 'Q', 'K', 'A']
+    simbolos = ['♠', '♣', '♥', '♦']
+    #mazo = list(map(lambda x,y : str(x) + y, numeros, simbolos))
+    mazo = [(str(n) + s) for n in numeros for s in simbolos]
+    random.shuffle(mazo)
+    return mazo
     
-    def recibir_carta(self, c):    
-        self.mano.append(c)
+def repartirCartas(mazo):
+    mano = []
     
-    def mostrar_mano(self):
-        print('Cartas de ' + self.nombre +":")    
-        for c in self.mano:
-            print(str(c.valor) + c.simbolo, end = " ")
-        print(" - " + str(self.contar_mano()))
+    #Se reparten 2 cartas por jugador
+    idx1 = random.randint(1, 47)
+    mano.append(mazo[idx1])
+    mazo.remove(mazo[idx1])
     
-    def contar_mano(self):
-        contador = 0
-        cont_ases = 0
+    idx2 = random.randint(1, 47)
+    mano.append(mazo[idx2])
+    mazo.remove(mazo[idx2])
+    
+    return mano
+
+def getValor(valor):
+    if(valor in ['J', 'Q', 'K', 'A']):
+        return 10
+    return valor
+
+def obtenerNumero(m):
+    new_m = m[:-1]
+    return new_m
+
+def contar_mano(mano):
+    new_mano = list(map(obtenerNumero, mano))
+    contador = 0
+    cont_ases = 0
         
-        for c in self.mano:
-            if(c.get_valor == 'A'):
-                cont_ases += 1
-            else:
-                contador += c.get_valor()
-        contador += cont_ases
-        ases_usados = 0
-        while(contador <= 11 and ases_usados < cont_ases):
-            contador += 10
-            ases_usados += 1
-        return contador
+    for m in new_mano:
+        if(m == 'A'):
+            cont_ases += 1
+        else:
+            contador += int(getValor(m))
+    contador += cont_ases
+    ases_usados = 0
+    while(contador <= 11 and ases_usados < cont_ases):
+        contador += 10
+        ases_usados += 1
+    return int(contador)
+
+def mostrar_mano(mano, nombre):
+        print('Cartas de ' + nombre +":")    
+        print(mano , end = " ")
+        print(" - " + str(contar_mano(mano)))
+
+def proxima_carta(mazo, mano):
+    idx1 = random.randint(1, 47)
+    mano.append(mazo[idx1])
+    mazo.remove(mazo[idx1])
+    return mano
+
+def main():
+    jugador = bienvenida()
+    banca = "La Banca"
+    turnoPC = False
+    mazo = generarMazo()    
+   
+    manoJugador = repartirCartas(mazo)
+    manoBanca = repartirCartas(mazo)
     
-mazo = Mazo()
-proxTurno = False
-
-print("== ♠ ♣ 𝓑𝓵𝓪𝓬𝓴𝓙𝓪𝓬𝓴 ♥ ♦ ==")
-print('Por favor ingrese su nombre:')
-jugador = Jugador((input()))
-
-banca = Jugador('La Banca')
-
-mazo.proxima_carta(jugador)
-mazo.proxima_carta(jugador)          
-
-mazo.proxima_carta(banca)
-mazo.proxima_carta(banca)
-
-while(jugador.contar_mano() <= 21):
-    jugador.mostrar_mano()
-    print('¿Que desea hacer?')
-    print('1- Pedir')
-    print('2- Plantarse')
-    r = int(input())
-    if(r == 1):
-        mazo.proxima_carta(jugador)
-    if(r == 2):
-        proxTurno = True
-        break        
-proxTurno = True
+    while(contar_mano(manoJugador) <= 21):
+        mostrar_mano(manoJugador, jugador)
+        print('¿Que desea hacer?')
+        print('1- Pedir')
+        print('2- Plantarse')
+        r = int(input())
+        if(r == 1):
+             proxima_carta(mazo, manoJugador)
+        if(r == 2):
+            turnoPC = True
+            break        
+    proxTurno = True
     
-if(proxTurno):
-    banca.mostrar_mano()
-    while(banca.contar_mano() <= 21):
-        mazo.proxima_carta(banca)
-  
-  
-if(jugador.contar_mano() > 21):
-    print("El jugador queda eliminado con " + str(jugador.contar_mano()))
-    jugador.mostrar_mano()
-else:
-    print("El jugador gana la ronda con " + str(jugador.contar_mano()))
-    jugador.mostrar_mano()
     
-if(banca.contar_mano() > 21):
-    print("La Banca queda eliminada con " + str(banca.contar_mano()))
-    banca.mostrar_mano()
-else:
-    print("La banca gana la ronda con " + str(banca.contar_mano())) 
-    banca.mostrar_mano()
+    if(proxTurno):
+        mostrar_mano(manoBanca, banca)
+        while(contar_mano(manoBanca) <= 21):
+            proxima_carta(mazo, manoBanca)
+    
+    
+    if(contar_mano(manoJugador) > 21):
+        print("El jugador queda eliminado con " + str(contar_mano(manoJugador)))
+        mostrar_mano(manoJugador, jugador)
+    else:
+        print("El jugador gana la ronda con " + str(contar_mano(manoJugador)))
+        mostrar_mano(manoJugador, jugador)
+
+    if(contar_mano(manoBanca) > 21):
+        print("La Banca queda eliminada con " + str(contar_mano(manoBanca)))
+        mostrar_mano(manoBanca, banca)
+    else:
+        print("La banca gana la ronda con " + str(contar_mano(manoBanca))) 
+        mostrar_mano(manoBanca, banca)
+                       
+if __name__ == "__main__":
+    main()
