@@ -26,8 +26,7 @@ def quitarCartas(mazo, cartas):
 def getValor(valor):
     if(valor in ['J', 'Q', 'K']):
         return 10
-    else:
-        return valor
+    return valor
 
 def obtenerNumero(m):
     new_m = m[:-1]
@@ -72,7 +71,7 @@ def main():
         print('\t2- Plantarse')
         r = int(input())
         if(r == 1):
-             proxima_carta(mazo, manoJugador)
+            proxima_carta(mazo, manoJugador)
         if(r == 2):
             print("El jugador se planto con - " + str(contar_mano(manoJugador)))
             turnoPC = True
