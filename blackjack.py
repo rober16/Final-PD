@@ -26,7 +26,8 @@ def quitarCartas(mazo, cartas):
 def getValor(valor):
     if(valor in ['J', 'Q', 'K']):
         return 10
-    return valor
+    else:
+        return valor
 
 def obtenerNumero(m):
     new_m = m[:-1]
@@ -38,16 +39,17 @@ def contar_mano(mano):
     cont_ases = 0
         
     for m in new_mano:
-        if(m == 'A'):
+        if(m == "A"):
             cont_ases += 1
         else:
             contador += int(getValor(m))
     contador += cont_ases
-    ases_usados = 0
-    while(contador <= 11 and ases_usados < cont_ases):
-        contador += 10
-        ases_usados += 1
-    return int(contador)
+    #ases_usados = 0
+    #while(contador <= 11 and ases_usados < cont_ases):
+    #    contador += 10
+    #    ases_usados += 1
+        
+    return contador
 
 def mostrar_mano(mano, nombre):
         print('\tCartas de ' + nombre + ": " + str(mano), end=" ")    
@@ -91,7 +93,10 @@ def main():
         mostrar_mano(manoJugador, jugador)
         mostrar_mano(manoBanca, banca)
     elif(contar_mano(manoJugador) > contar_mano(manoBanca) and contar_mano(manoJugador) <= 21 or contar_mano(manoBanca) > 21):
-        print(jugador + " gana la ronda!")
+        if(contar_mano(manoJugador) == 21):
+            print(jugador + " gana la ronda con BlackJack!")
+        else:
+            print(jugador + " gana la ronda!")
         mostrar_mano(manoJugador, jugador)
         mostrar_mano(manoBanca, banca)
     else: 
