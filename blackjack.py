@@ -84,7 +84,7 @@ def main():
     
     if(turnoPC):
         mostrar_mano(manoBanca, banca)
-        while(contar_mano(manoBanca) <= 21):
+        while(contar_mano(manoBanca) <= 16):
                 proxima_carta(mazo, manoBanca)
 
     if(contar_mano(manoJugador) > 21 or contar_mano(manoBanca) > contar_mano(manoJugador) and contar_mano(manoBanca) <= 21):
