@@ -1,4 +1,5 @@
 import random
+from itertools import cycle
 
 def bienvenida():
     print("== ♠ ♣ 𝓑𝓵𝓪𝓬𝓴𝓙𝓪𝓬𝓴 ♥ ♦ ==")
@@ -9,24 +10,19 @@ def bienvenida():
 def generarMazo():
     numeros = list(range(2,11)) + ['J', 'Q', 'K', 'A']
     simbolos = ['♠', '♣', '♥', '♦']
-    #mazo = list(map(lambda x,y : str(x) + y, numeros, simbolos))
     mazo = [(str(n) + s) for n in numeros for s in simbolos]
     random.shuffle(mazo)
     return mazo
     
 def repartirCartas(mazo):
     mano = []
-    
-    #Se reparten 2 cartas por jugador
-    idx1 = random.randint(1, 47)
-    mano.append(mazo[idx1])
-    mazo.remove(mazo[idx1])
-    
-    idx2 = random.randint(1, 47)
-    mano.append(mazo[idx2])
-    mazo.remove(mazo[idx2])
-    
+    list(map(lambda c: mano.append(c), mazo[0:2]))
+    quitarCartas(mazo, mazo[0:2])
     return mano
+
+def quitarCartas(mazo, cartas):
+    for n in cartas:
+        mazo.remove(n)
 
 def getValor(valor):
     if(valor in ['J', 'Q', 'K']):
@@ -55,21 +51,19 @@ def contar_mano(mano):
     return int(contador)
 
 def mostrar_mano(mano, nombre):
-        print('Cartas de ' + nombre +":")    
-        print(mano , end = " ")
+        print('\tCartas de ' + nombre + ": " + str(mano), end=" ")    
         print(" - " + str(contar_mano(mano)))
 
 def proxima_carta(mazo, mano):
-    idx1 = random.randint(1, 47)
-    mano.append(mazo[idx1])
-    mazo.remove(mazo[idx1])
+    list(map(lambda c: mano.append(c), mazo[0:1]))
+    quitarCartas(mazo, mazo[0:1])
     return mano
 
 def main():
     jugador = bienvenida()
     banca = "La Banca"
     turnoPC = False
-    mazo = generarMazo()    
+    mazo = generarMazo()   
    
     manoJugador = repartirCartas(mazo)
     manoBanca = repartirCartas(mazo)
@@ -77,8 +71,8 @@ def main():
     while(contar_mano(manoJugador) <= 21):
         mostrar_mano(manoJugador, jugador)
         print('¿Que desea hacer?')
-        print('1- Pedir')
-        print('2- Plantarse')
+        print('\t1- Pedir')
+        print('\t2- Plantarse')
         r = int(input())
         if(r == 1):
              proxima_carta(mazo, manoJugador)
@@ -88,34 +82,22 @@ def main():
             break        
     turnoPC = True
     
-    
     if(turnoPC):
         mostrar_mano(manoBanca, banca)
-        while(contar_mano(manoBanca) <= 17):
+        while(contar_mano(manoBanca) <= 21):
                 proxima_carta(mazo, manoBanca)
-    
-    
-    if(contar_mano(manoJugador) > 21):
-        print("El jugador queda eliminado con " + str(contar_mano(manoJugador)))
-        mostrar_mano(manoJugador, jugador)
-    else:
-        print("El jugador gana la ronda con " + str(contar_mano(manoJugador)))
-        mostrar_mano(manoJugador, jugador)
 
-    if(contar_mano(manoBanca) > 21):
-        print("La Banca queda eliminada con " + str(contar_mano(manoBanca)))
-        mostrar_mano(manoBanca, banca)
-    else:
-        print("La banca gana la ronda con " + str(contar_mano(manoBanca))) 
-        mostrar_mano(manoBanca, banca)
-
-    
-    if(contar_mano(manoJugador) == 21):
-        print("El jugador gana la ronda con BlackJack " + str(contar_mano(manoJugador)))
+    if(contar_mano(manoJugador) > 21 or contar_mano(manoBanca) > contar_mano(manoJugador) and contar_mano(manoBanca) <= 21):
+        print(jugador + " queda eliminado!")
         mostrar_mano(manoJugador, jugador)
-    
-    if(contar_mano(manoBanca) == 21):
-        print("La banca gana la ronda con BlackJack " + str(contar_mano(manoBanca)))
+        mostrar_mano(manoBanca, banca)
+    elif(contar_mano(manoJugador) > contar_mano(manoBanca) and contar_mano(manoJugador) <= 21 or contar_mano(manoBanca) > 21):
+        print(jugador + " gana la ronda!")
+        mostrar_mano(manoJugador, jugador)
+        mostrar_mano(manoBanca, banca)
+    else: 
+        print("Empate!")
+        mostrar_mano(manoJugador, jugador)
         mostrar_mano(manoBanca, banca)
                        
 if __name__ == "__main__":
