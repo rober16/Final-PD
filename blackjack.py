@@ -44,10 +44,6 @@ def contar_mano(mano):
         else:
             contador += int(getValor(m))
     contador += cont_ases
-    #ases_usados = 0
-    #while(contador <= 11 and ases_usados < cont_ases):
-    #    contador += 10
-    #    ases_usados += 1
         
     return contador
 
