@@ -1,5 +1,4 @@
 import random
-from itertools import cycle
 
 def bienvenida():
     print("== ♠ ♣ 𝓑𝓵𝓪𝓬𝓴𝓙𝓪𝓬𝓴 ♥ ♦ ==")
