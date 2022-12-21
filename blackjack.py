@@ -58,7 +58,7 @@ def proxima_carta(mazo, mano):
 def main():
     jugador = bienvenida()
     banca = "La Banca"
-    turnoPC = False
+    turnoBanca = False
     mazo = generarMazo()   
    
     manoJugador = repartirCartas(mazo)
@@ -74,11 +74,11 @@ def main():
             proxima_carta(mazo, manoJugador)
         if(r == 2):
             print("El jugador se planto con - " + str(contar_mano(manoJugador)))
-            turnoPC = True
+            turnoBanca = True
             break        
-    turnoPC = True
+    turnoBanca = True
     
-    if(turnoPC):
+    if(turnoBanca):
         mostrar_mano(manoBanca, banca)
         while(contar_mano(manoBanca) <= 16):
                 proxima_carta(mazo, manoBanca)
